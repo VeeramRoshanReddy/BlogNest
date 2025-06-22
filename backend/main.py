@@ -16,6 +16,7 @@ app = FastAPI(
 )
 
 # Add CORS middleware BEFORE any routes
+'''
 @app.middleware("http")
 async def cors_handler(request, call_next):
     response = await call_next(request)
@@ -23,19 +24,16 @@ async def cors_handler(request, call_next):
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
+'''
 
 # Enhanced CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://blog-nest-seven.vercel.app",
-        "http://localhost:3000",  # For local development
-        "http://127.0.0.1:3000",  # Alternative localhost
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-    expose_headers=["*"],
+    allow_headers=["*"]
+    #expose_headers=["*"]
 )
 
 @app.on_event("startup")
