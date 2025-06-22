@@ -3,12 +3,29 @@ import styled from 'styled-components';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const BlogCard = ({ blog, onClick }) => {
+    // Safe date formatting function
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Unknown date';
+        
+        try {
+            const date = new Date(dateString);
+            // Check if date is valid
+            if (isNaN(date.getTime())) {
+                return 'Invalid date';
+            }
+            return date.toLocaleDateString();
+        } catch (error) {
+            console.error('Date formatting error:', error);
+            return 'Invalid date';
+        }
+    };
+
     return (
         <Card onClick={() => onClick(blog)}>
             <Title>{blog.title}</Title>
             <Meta>
                 <Author>By {blog.author?.username || 'Unknown'}</Author>
-                <Date>{new Date(blog.created_at).toLocaleDateString()}</Date>
+                <Date>{formatDate(blog.created_at)}</Date>
             </Meta>
             <Excerpt>{blog.content.slice(0, 120)}{blog.content.length > 120 ? '...' : ''}</Excerpt>
             <Stats>
@@ -86,4 +103,4 @@ const Stat = styled.div`
     font-size: 1.05rem;
 `;
 
-export default BlogCard; 
+export default BlogCard;
