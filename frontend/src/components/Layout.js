@@ -15,8 +15,8 @@ const Layout = () => {
 };
 
 const MainContent = styled.main`
-  padding: 20px;
-  margin-top: 80px; /* To offset the fixed navbar */
+  padding: 0;
+  margin-top: 0;
 `;
 
 export default Layout; 
