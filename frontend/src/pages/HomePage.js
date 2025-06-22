@@ -85,7 +85,7 @@ const HomePage = () => {
 const Container = styled.div`
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: 5px 2rem;
 `;
 
 const PageContainer = styled.div`

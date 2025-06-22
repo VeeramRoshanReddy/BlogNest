@@ -46,7 +46,7 @@ const CategoriesPage = () => {
 };
 
 const Container = styled.div`
-    padding: 1rem 2rem;
+    padding: 5px 2rem;
     max-width: 1200px;
     margin: 0 auto;
 `;

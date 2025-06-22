@@ -138,11 +138,11 @@ const OuterContainer = styled.div`
 
 const CardContainer = styled.div`
     background: #fff;
-    padding: 3rem;
+    padding: 2rem;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 450px;
+    max-width: 400px;
     position: relative;
     animation: ${slide} 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     transition: all 0.3s ease-in-out;
@@ -202,9 +202,9 @@ const FormContainer = styled.form`
 
 const Title = styled.h2`
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem;
     color: #1976d2;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     letter-spacing: 1px;
 `;
@@ -216,8 +216,8 @@ const SubTitle = styled.p`
 `;
 
 const Input = styled.input`
-    padding: 1rem;
-    margin-bottom: 1.5rem;
+    padding: 0.8rem;
+    margin-bottom: 0.9rem;
     border: 1px solid #ddd;
     border-radius: 10px;
     font-size: 1rem;
@@ -233,10 +233,10 @@ const Input = styled.input`
 
 const Button = styled.button`
     width: 100%;
-    padding: 15px;
+    padding: 0.8rem 1.5rem;
     margin-top: 10px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #1976d2;
     color: #fff;
     font-size: 1.2rem;
