@@ -4,8 +4,8 @@ from database import engine, SessionLocal, seed_categories
 from routers import blog, user, authentication
 from fastapi.middleware.cors import CORSMiddleware
 
-#Pydentic models are called schemeas in FastAPI
-#SQLAlchemy models are called models in FastAPI
+# Pydantic models are called schemas in FastAPI
+# SQLAlchemy models are called models in FastAPI
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -15,20 +15,31 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Enhanced CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://blog-nest-seven.vercel.app"],  # Or use your Vercel frontend URL for more security
+    allow_origins=[
+        "https://blog-nest-seven.vercel.app",
+        "http://localhost:3000",  # For local development
+        "http://127.0.0.1:3000",  # Alternative localhost
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 @app.on_event("startup")
 def on_startup():
-    db = SessionLocal()
-    seed_categories(db)
-    db.close()
+    try:
+        db = SessionLocal()
+        seed_categories(db)
+        db.close()
+        print("Database seeded successfully")
+    except Exception as e:
+        print(f"Error during startup: {e}")
 
+# Include routers
 app.include_router(authentication.router)
 app.include_router(blog.router)
 app.include_router(blog.category_router)
@@ -37,6 +48,16 @@ app.include_router(user.router)
 @app.get("/")
 def root():
     return {"message": "BlogNest API is running!"}
+
+# Health check endpoint
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "message": "BlogNest API is operational"}
+
+# Add a test CORS endpoint
+@app.get("/test-cors")
+def test_cors():
+    return {"message": "CORS is working!", "origin": "allowed"}
 
 '''
 from fastapi import FastAPI, Depends, status, Response, HTTPException
