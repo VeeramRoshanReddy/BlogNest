@@ -21,7 +21,7 @@ const HomePage = () => {
             let sorted = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             if (searchTerm.trim()) {
                 if (searchBy === 'author') {
-                    sorted = sorted.filter(blog => blog.author?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
+                    sorted = sorted.filter(blog => blog.creator?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
                 } else {
                     sorted = sorted.filter(blog => blog.title?.toLowerCase().includes(searchTerm.toLowerCase()));
                 }
@@ -52,81 +52,86 @@ const HomePage = () => {
 
     return (
         <Container>
-            <SearchBarContainer>
-                <SearchInput
-                    type="text"
-                    placeholder={`Search by ${searchBy}...`}
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-                <Dropdown value={searchBy} onChange={e => setSearchBy(e.target.value)}>
-                    <option value="title">Title</option>
-                    <option value="author">Author</option>
-                </Dropdown>
-                <SearchIcon />
-            </SearchBarContainer>
-            {loading && <Loading>Loading blogs...</Loading>}
-            {error && <ErrorMsg>{error}</ErrorMsg>}
-            {!loading && !error && (
-                <BlogGrid>
-                    {blogs.map((blog) => (
-                        <BlogCard key={blog.id} blog={blog} onClick={handleCardClick} />
-                    ))}
-                </BlogGrid>
-            )}
-            {selectedBlog && <BlogModal blog={selectedBlog} onClose={handleCloseModal} />}
+            <PageContainer>
+                <Title>Blog Posts</Title>
+                <SearchContainer>
+                    <SearchInput
+                        type="text"
+                        placeholder={`Search by ${searchBy}...`}
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                    <SearchSelect value={searchBy} onChange={e => setSearchBy(e.target.value)}>
+                        <option value="title">Title</option>
+                        <option value="author">Author</option>
+                    </SearchSelect>
+                    <SearchIcon />
+                </SearchContainer>
+                {loading && <Loading>Loading blogs...</Loading>}
+                {error && <ErrorMsg>{error}</ErrorMsg>}
+                {!loading && !error && (
+                    <BlogGrid>
+                        {blogs.map((blog) => (
+                            <BlogCard key={blog.id} blog={blog} onClick={handleCardClick} />
+                        ))}
+                    </BlogGrid>
+                )}
+                {selectedBlog && <BlogModal blog={selectedBlog} onClose={handleCloseModal} />}
+            </PageContainer>
         </Container>
     );
 };
 
 const Container = styled.div`
-    min-height: 100vh;
-    width: 100vw;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 40px 0 0 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
 `;
 
-const SearchBarContainer = styled.div`
+const PageContainer = styled.div`
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+`;
+
+const Title = styled.h1`
+    font-size: 2.5rem;
+    color: #1976d2;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 700;
+`;
+
+const SearchContainer = styled.div`
     display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    gap: 1rem;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
-    margin-top: 10px;
-    background: #e3f0fd;
-    border-radius: 12px;
-    padding: 16px 24px;
-    box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.06);
+    margin-right: 1rem;
 `;
 
 const SearchInput = styled.input`
-    padding: 12px 16px;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    border: 1.5px solid #1976d2;
     font-size: 1rem;
-    background: #fff;
-    color: #0d2346;
-    width: 260px;
+    width: 300px;
+    transition: border-color 0.3s;
+
     &:focus {
-        border-color: #1565c0;
         outline: none;
+        border-color: #1976d2;
     }
 `;
 
-const Dropdown = styled.select`
-    padding: 12px 16px;
+const SearchSelect = styled.select`
+    padding: 0.8rem;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    border: 1.5px solid #1976d2;
     font-size: 1rem;
-    background: #fff;
-    color: #1976d2;
-    &:focus {
-        border-color: #1565c0;
-        outline: none;
-    }
+    background: white;
+    cursor: pointer;
 `;
 
 const SearchIcon = styled(FaSearch)`

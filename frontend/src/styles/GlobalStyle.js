@@ -1,20 +1,52 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  html, body, #root {
-    min-height: 100vh;
-    width: 100vw;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
-    background: #fff;
-    color: #0d2346;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
   }
 
-  *, *::before, *::after {
-    box-sizing: inherit;
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa; /* A very light, almost white grey (5% grey) */
+    color: #333;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+  }
+
+  body {
+    line-height: 1.6;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; 
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #ccc; /* Grey scrollbar handle */
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #aaa; /* Darker grey on hover */
   }
 
   a {

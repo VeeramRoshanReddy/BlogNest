@@ -6,9 +6,11 @@ import BlogCard from '../components/BlogCard';
 import BlogModal from '../components/BlogModal';
 import { FaPlusCircle } from 'react-icons/fa';
 import CreateBlogModal from '../components/CreateBlogModal';
+import ConfirmationModal from '../components/ConfirmationModal';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [myBlogs, setMyBlogs] = useState([]);
     const [likedBlogs, setLikedBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,6 +18,9 @@ const ProfilePage = () => {
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(0);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [blogToDelete, setBlogToDelete] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -40,22 +45,34 @@ const ProfilePage = () => {
         fetchProfileData();
     }, [user, forceUpdate]);
     
-    const handleDelete = async (blogId) => {
-        if (window.confirm('Are you sure you want to delete this blog? This action cannot be undone.')) {
-            try {
-                await api.delete(`/blog/${blogId}`);
-                setForceUpdate(prev => prev + 1);
-            } catch (err) {
-                console.error('Failed to delete blog', err);
-                setError('Failed to delete blog. You may not be the author.');
-            }
+    const handleDeleteClick = (blogId) => {
+        setBlogToDelete(blogId);
+        setShowDeleteConfirm(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!blogToDelete) return;
+        try {
+            await api.delete(`/blogs/${blogToDelete}`);
+            setForceUpdate(prev => prev + 1);
+        } catch (err) {
+            setError('Failed to delete the blog. Please try again.');
+        } finally {
+            setShowDeleteConfirm(false);
+            setBlogToDelete(null);
         }
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteConfirm(false);
+        setBlogToDelete(null);
     };
 
     const handleUnlike = async (blogId) => {
         try {
             await api.post(`/blog/${blogId}/like`); // Toggling like will unlike it
             setLikedBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blogId));
+            setForceUpdate(prev => prev + 1);
         } catch (err) {
             console.error('Failed to unlike blog', err);
             setError('Failed to update liked blogs.');
@@ -98,7 +115,8 @@ const ProfilePage = () => {
                             key={`my-${blog.id}`} 
                             blog={blog} 
                             onClick={setSelectedBlog} 
-                            onDelete={() => handleDelete(blog.id)}
+                            onDelete={() => handleDeleteClick(blog.id)}
+                            showDelete={true}
                         />
                     )) : <p>You haven't posted any blogs yet.</p>}
                 </BlogGrid>
@@ -120,6 +138,14 @@ const ProfilePage = () => {
 
             {selectedBlog && <BlogModal blog={selectedBlog} onClose={handleCloseViewModal} />}
             {isCreateModalOpen && <CreateBlogModal onClose={handleCloseCreateModal} />}
+
+            {showDeleteConfirm && (
+                <ConfirmationModal
+                    message="Are you sure you want to permanently delete this blog?"
+                    onConfirm={confirmDelete}
+                    onCancel={cancelDelete}
+                />
+            )}
         </Container>
     );
 };
@@ -127,7 +153,7 @@ const ProfilePage = () => {
 const Container = styled.div`
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 1rem 2rem;
 `;
 
 const Header = styled.div`

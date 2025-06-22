@@ -46,16 +46,17 @@ const CategoriesPage = () => {
 };
 
 const Container = styled.div`
+    padding: 1rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 `;
 
 const Title = styled.h1`
     font-size: 2.5rem;
-    color: #333;
+    color: #1976d2;
     margin-bottom: 40px;
     text-align: center;
+    font-weight: 700;
 `;
 
 const CategoryGrid = styled.div`

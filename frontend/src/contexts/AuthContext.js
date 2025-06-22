@@ -72,18 +72,20 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (username, email, password) => {
     try {
-      const response = await api.post('/user/', { 
+      // First, create the user
+      await api.post('/users/', { 
         username, 
         email, 
         password 
       });
       
-      console.log('Signup successful:', response.data);
-      
-      // After successful signup, automatically log the user in
+      // If signup is successful, automatically log the user in
+      // This provides a seamless experience
       return await login(email, password);
+
     } catch (error) {
       console.error('Signup failed:', error);
+      // Re-throw the error so the component can catch it and display a message
       throw error;
     }
   };

@@ -116,31 +116,36 @@ const LoginPage = () => {
 };
 
 const slide = keyframes`
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 `;
 
 const OuterContainer = styled.div`
-    min-height: 100vh;
-    width: 100vw;
-    background: #fff;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    overflow: hidden;
 `;
 
 const CardContainer = styled.div`
     background: #fff;
-    border-radius: 24px;
-    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.10);
-    padding: 48px 32px 32px 32px;
-    min-width: 370px;
-    max-width: 400px;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    animation: ${slide} 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    max-width: 450px;
+    position: relative;
+    animation: ${slide} 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transition: all 0.3s ease-in-out;
 `;
 
 const ToggleBar = styled.div`
@@ -195,10 +200,13 @@ const FormContainer = styled.form`
     width: 100%;
 `;
 
-const Title = styled.h1`
+const Title = styled.h2`
+    text-align: center;
+    margin-bottom: 2rem;
     color: #1976d2;
-    font-size: 2rem;
-    margin-bottom: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
 `;
 
 const SubTitle = styled.p`
@@ -208,25 +216,18 @@ const SubTitle = styled.p`
 `;
 
 const Input = styled.input`
-    width: 100%;
-    padding: 14px;
-    border-radius: 8px;
-    border: 1.5px solid #e3f0fd;
-    background: #fff;
-    color: #0d2346;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     font-size: 1rem;
-    box-sizing: border-box;
-    transition: border-color 0.18s, box-shadow 0.18s;
-    &::placeholder {
-        color: #b0c4de;
-    }
+    transition: all 0.3s ease;
+
     &:focus {
+        outline: none;
         border-color: #1976d2;
-        box-shadow: 0 0 0 2px #1976d255;
-    }
-    &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+        transform: scale(1.02);
     }
 `;
 
@@ -239,15 +240,39 @@ const Button = styled.button`
     background: #1976d2;
     color: #fff;
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
-    &:hover:not(:disabled) {
-        background: #1565c0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(25, 118, 210, 0.3);
+    }
+    
+    &:active {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 10px rgba(25, 118, 210, 0.3);
     }
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+    }
+`;
+
+const ToggleText = styled.p`
+    color: #555;
+    transition: color 0.3s ease;
+
+    span {
+        color: #1976d2;
+        font-weight: 600;
+        cursor: pointer;
+        
+        &:hover {
+            text-decoration: underline;
+        }
     }
 `;
 

@@ -6,6 +6,57 @@ import BlogCard from '../components/BlogCard';
 import BlogModal from '../components/BlogModal';
 import { FaSearch, FaArrowLeft } from 'react-icons/fa';
 
+const PageContainer = styled.div`
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+`;
+
+const Title = styled.h1`
+    font-size: 2.5rem;
+    color: #1976d2;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 700;
+`;
+
+const SearchContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    align-items: center;
+`;
+
+const SearchInput = styled.input`
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 300px;
+    transition: border-color 0.3s;
+
+    &:focus {
+        outline: none;
+        border-color: #1976d2;
+    }
+`;
+
+const SearchSelect = styled.select`
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+`;
+
+const BlogGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+`;
+
 const CategoryBlogPage = () => {
     const { categoryId } = useParams();
     const [blogs, setBlogs] = useState([]);
@@ -24,7 +75,7 @@ const CategoryBlogPage = () => {
             let sorted = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             if (searchTerm.trim()) {
                 if (searchBy === 'author') {
-                    sorted = sorted.filter(blog => blog.author?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
+                    sorted = sorted.filter(blog => blog.creator?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
                 } else {
                     sorted = sorted.filter(blog => blog.title?.toLowerCase().includes(searchTerm.toLowerCase()));
                 }
@@ -53,119 +104,49 @@ const CategoryBlogPage = () => {
     };
 
     return (
-        <Container>
-            <Header>
-                <div>
-                    <BackButton to="/categories"><FaArrowLeft /> Back to Categories</BackButton>
-                    <Title>Blogs in {category ? `"${category.name}"` : 'Category'}</Title>
-                </div>
-                <SearchBarContainer>
-                    <SearchInput
-                        type="text"
-                        placeholder={`Search by ${searchBy}...`}
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
-                    <Dropdown value={searchBy} onChange={e => setSearchBy(e.target.value)}>
-                        <option value="title">Title</option>
-                        <option value="author">Author</option>
-                    </Dropdown>
-                    <SearchIcon />
-                </SearchBarContainer>
-            </Header>
+        <PageContainer>
+            <Title>{category ? `"${category.name}"` : 'Category'}</Title>
+            
+            <SearchContainer>
+                <SearchSelect 
+                    value={searchBy} 
+                    onChange={(e) => setSearchBy(e.target.value)}
+                >
+                    <option value="title">Title</option>
+                    <option value="author">Author</option>
+                </SearchSelect>
+                <SearchInput
+                    type="text"
+                    placeholder={`Search by ${searchBy}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </SearchContainer>
 
-            {loading && <p>Loading blogs...</p>}
-            {error && <p>{error}</p>}
-            {!loading && !error && blogs.length > 0 ? (
+            {loading ? (
+                <div>Loading...</div>
+            ) : error ? (
+                <div>Error: {error}</div>
+            ) : (
                 <BlogGrid>
                     {blogs.map((blog) => (
-                        <BlogCard key={blog.id} blog={blog} onClick={setSelectedBlog} />
+                        <BlogCard 
+                            key={blog.id} 
+                            blog={blog} 
+                            onClick={() => setSelectedBlog(blog)}
+                        />
                     ))}
                 </BlogGrid>
-            ) : (
-                <p>No blogs found in this category.</p>
             )}
 
-            {selectedBlog && <BlogModal blog={selectedBlog} onClose={handleCloseModal} />}
-        </Container>
+            {selectedBlog && (
+                <BlogModal 
+                    blog={selectedBlog} 
+                    onClose={handleCloseModal}
+                />
+            )}
+        </PageContainer>
     );
 };
-
-// Reusing some styles from HomePage for consistency, but defining them here
-// to make the component self-contained. In a larger app, these could be shared components.
-const Container = styled.div`
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-`;
-
-const Title = styled.h1`
-    font-size: 2.5rem;
-    color: #333;
-`;
-
-const BackButton = styled(Link)`
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-    color: #1976d2;
-    font-weight: 500;
-`;
-
-const SearchBarContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #e3f0fd;
-    border-radius: 12px;
-    padding: 12px 20px;
-    box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.06);
-`;
-
-const SearchInput = styled.input`
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1.5px solid #1976d2;
-    font-size: 1rem;
-    background: #fff;
-    color: #0d2346;
-    width: 180px;
-    &:focus {
-        border-color: #1565c0;
-        outline: none;
-    }
-`;
-
-const Dropdown = styled.select`
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1.5px solid #1976d2;
-    font-size: 1rem;
-    background: #fff;
-    color: #1976d2;
-    &:focus {
-        border-color: #1565c0;
-        outline: none;
-    }
-`;
-
-const SearchIcon = styled(FaSearch)`
-    color: #1976d2;
-    font-size: 1.2rem;
-`;
-
-const BlogGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 30px;
-`;
 
 export default CategoryBlogPage; 

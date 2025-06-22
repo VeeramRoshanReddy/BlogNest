@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FaHome, FaUserCircle, FaSignOutAlt, FaTh } from 'react-icons/fa';
+import { FaHome, FaUserCircle, FaSignOutAlt, FaTh, FaFeatherAlt } from 'react-icons/fa';
 
 const Navbar = () => {
     const { logout } = useAuth();
@@ -42,44 +42,44 @@ const Navbar = () => {
 };
 
 const Nav = styled.nav`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    padding: 0 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
-    box-shadow: 0 2px 12px 0 rgba(25, 118, 210, 0.07);
-    border-bottom: 2px solid #e3f0fd;
+    padding: 0.8rem 2rem;
+    background: #1976d2; /* Blue Background */
+    color: #fff; /* White Text */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
     z-index: 1000;
-    color: #1976d2;
 `;
 
 const LogoContainer = styled.div`
-    text-align: center;
+    display: flex;
+    align-items: center;
 `;
 
 const Logo = styled(Link)`
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #1976d2;
-    font-family: 'Georgia', serif;
-    letter-spacing: 1px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff; /* White Logo Text */
+    display: flex;
+    align-items: center;
+    gap: 10px;
 `;
 
 const Tagline = styled.p`
     font-size: 0.8rem;
-    margin-top: -5px;
-    color: #1976d2;
-    opacity: 0.7;
+    font-style: italic;
+    color: #e3f2fd; /* Lighter white for tagline */
+    margin-left: 1rem;
+    opacity: 0.9;
 `;
 
 const NavLinks = styled.div`
     display: flex;
-    gap: 30px;
+    align-items: center;
+    gap: 1rem;
 `;
 
 const UserActions = styled.div`
@@ -89,35 +89,32 @@ const UserActions = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.1rem;
-    color: #1976d2;
-    background: transparent;
-    border-radius: 8px;
-    padding: 4px 10px;
-    transition: background 0.18s, color 0.18s;
+    color: #fff; /* White Link Text */
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.2s;
+
     &:hover {
-        background: #e3f0fd;
-        color: #1565c0;
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
     }
 `;
 
 const LogoutButton = styled.button`
-    background: none;
-    border: none;
+    color: #fff; /* White Button Text */
+    background: transparent;
+    border: 1px solid #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1rem;
-    color: #1976d2;
-    transition: background 0.18s, color 0.18s;
-    display: flex;
-    align-items: center;
-    border-radius: 8px;
-    padding: 4px 10px;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+
     &:hover {
-        background: #e3f0fd;
-        color: #1565c0;
+        background-color: #fff;
+        color: #1976d2; /* Blue text on hover */
+        transform: translateY(-2px);
     }
 `;
 
