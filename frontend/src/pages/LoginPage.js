@@ -17,7 +17,9 @@ const LoginPage = () => {
         setError('');
         try {
             if (isLogin) {
-                await login(email, password);
+                const data = await login(email, password);
+                localStorage.setItem('access_token', data.access_token);
+                navigate('/');
             } else {
                 await signup(username, email, password);
             }
