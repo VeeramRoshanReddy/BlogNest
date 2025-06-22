@@ -84,6 +84,30 @@ class BlogResponse(BaseModel):
     category: CategoryResponse
     model_config = ConfigDict(from_attributes=True)
 
+# Blog card response - shows description instead of full body
+class BlogCardResponse(BaseModel):
+    id: int
+    title: str
+    description: Optional[str] = None
+    created_at: datetime
+    likes: int = 0
+    dislikes: int = 0
+    creator: UserResponse
+    category: CategoryResponse
+    model_config = ConfigDict(from_attributes=True)
+    
+    @computed_field
+    @property
+    def formatted_date(self) -> str:
+        """Return formatted date string in ISO format for frontend compatibility"""
+        return self.created_at.isoformat()
+    
+    @computed_field
+    @property
+    def author_name(self) -> str:
+        """Return author username"""
+        return self.creator.username if self.creator else "Unknown Author"
+
 class ShowBlog(BaseModel):
     id: int
     title: str

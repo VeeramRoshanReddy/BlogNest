@@ -71,27 +71,28 @@ def health_check():
 def test_cors():
     return {"message": "CORS is working!", "origin": "allowed"}
 
-# New blog endpoints using the BlogResponse model
-@app.get("/blogs", response_model=List[schemas.BlogResponse])
+# Blog endpoints - separate for cards and full content
+@app.get("/blogs", response_model=List[schemas.BlogCardResponse])
 def get_blogs(db: Session = Depends(get_db)):
-    # If you have a repository module, use:
-    # return repository.blog.get_all(db)
-    
-    # Otherwise, implement the logic directly:
-    blogs = db.query(models.Blog).all()
+    """Get all blogs for card display (without full body content)"""
+    # Query with proper joins to ensure creator and category data is loaded
+    blogs = db.query(models.Blog).join(models.User).join(models.Category).all()
     return blogs
 
 @app.get("/blogs/{id}", response_model=schemas.BlogResponse)
 def get_blog(id: int, db: Session = Depends(get_db)):
-    # If you have a repository module, use:
-    # return repository.blog.get_one(id, db)
-    
-    # Otherwise, implement the logic directly:
-    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    """Get single blog with full content"""
+    blog = db.query(models.Blog).join(models.User).join(models.Category).filter(models.Blog.id == id).first()
     if not blog:
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Blog not found")
     return blog
+
+@app.get("/blogs/cards/all", response_model=List[schemas.BlogCardResponse])
+def get_blog_cards(db: Session = Depends(get_db)):
+    """Explicit endpoint for blog cards with proper joins"""
+    blogs = db.query(models.Blog).join(models.User).join(models.Category).all()
+    return blogs
 
 '''
 from fastapi import FastAPI, Depends, status, Response, HTTPException

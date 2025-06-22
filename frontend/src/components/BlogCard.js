@@ -9,7 +9,6 @@ const BlogCard = ({ blog, onClick }) => {
     console.log('Blog keys:', blog ? Object.keys(blog) : 'blog is null/undefined');
     console.log('Blog.creator:', blog?.creator);
     console.log('Blog.created_at:', blog?.created_at);
-    console.log('Blog.body:', blog?.body);
     console.log('Blog.description:', blog?.description);
     console.log('======================');
     
@@ -31,18 +30,26 @@ const BlogCard = ({ blog, onClick }) => {
         );
     }
 
-    // Safe date formatting function
+    // Enhanced date formatting function
     const formatDate = (dateString) => {
         if (!dateString) return 'Unknown date';
         
         try {
-            // Handle different date formats that might come from backend
             let date;
+            
+            // Handle different date formats from backend
             if (typeof dateString === 'string') {
-                // Replace space with 'T' if needed for ISO format
-                const isoString = dateString.replace(' ', 'T');
-                date = new Date(isoString);
+                // If it's already in ISO format or similar
+                if (dateString.includes('T') || dateString.includes('-')) {
+                    date = new Date(dateString);
+                } else {
+                    // Handle other string formats
+                    date = new Date(dateString);
+                }
+            } else if (dateString instanceof Date) {
+                date = dateString;
             } else {
+                // Try to convert whatever we got
                 date = new Date(dateString);
             }
             
@@ -51,24 +58,46 @@ const BlogCard = ({ blog, onClick }) => {
                 console.error('Invalid date:', dateString);
                 return 'Invalid date';
             }
-            return date.toLocaleDateString();
+            
+            // Format date in a readable way
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         } catch (error) {
             console.error('Date formatting error:', error, 'for date:', dateString);
             return 'Invalid date';
         }
     };
 
-    // Safe content handling - prioritize body over description
+    // Get description for excerpt - prioritize description over body for cards
     const getExcerpt = () => {
-        const content = blog.body || blog.description || '';
-        if (!content || typeof content !== 'string') return 'No content available';
+        // For blog cards, we want description, not the full body content
+        const content = blog.description || 'No description available';
+        
+        if (!content || typeof content !== 'string') {
+            return 'No description available';
+        }
+        
+        // Truncate if too long
         return content.length > 120 ? content.slice(0, 120) + '...' : content;
     };
 
-    // Get author name from creator relationship
+    // Get author name from creator relationship with better fallbacks
     const getAuthorName = () => {
-        if (!blog.creator) return 'Unknown Author';
-        return blog.creator.username || blog.creator.email || 'Unknown Author';
+        // Check if we have a computed field from backend
+        if (blog.author_name) {
+            return blog.author_name;
+        }
+        
+        // Check creator object
+        if (blog.creator) {
+            return blog.creator.username || blog.creator.email || 'Unknown Author';
+        }
+        
+        // Fallback
+        return 'Unknown Author';
     };
 
     return (
@@ -76,7 +105,7 @@ const BlogCard = ({ blog, onClick }) => {
             <Title>{blog.title || 'Untitled'}</Title>
             <Meta>
                 <Author>By {getAuthorName()}</Author>
-                <Date>{formatDate(blog.created_at)}</Date>
+                <Date>{formatDate(blog.created_at || blog.formatted_date)}</Date>
             </Meta>
             <Excerpt>{getExcerpt()}</Excerpt>
             <Stats>
