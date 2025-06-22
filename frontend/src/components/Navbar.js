@@ -45,7 +45,7 @@ const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 2rem;
+    padding: 1rem 2rem;
     background: #1976d2; /* Blue Background */
     color: #fff; /* White Text */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -60,7 +60,7 @@ const LogoContainer = styled.div`
 `;
 
 const Logo = styled(Link)`
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #fff; /* White Logo Text */
     display: flex;
@@ -69,7 +69,7 @@ const Logo = styled(Link)`
 `;
 
 const Tagline = styled.p`
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-style: italic;
     color: #e3f2fd; /* Lighter white for tagline */
     margin-left: 1rem;
@@ -90,8 +90,9 @@ const UserActions = styled.div`
 
 const StyledLink = styled(Link)`
     color: #fff; /* White Link Text */
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.1rem;
     border-radius: 5px;
+    font-size: 1.1rem;
     font-weight: 500;
     transition: background-color 0.3s, transform 0.2s;
 
@@ -105,9 +106,10 @@ const LogoutButton = styled.button`
     color: #fff; /* White Button Text */
     background: transparent;
     border: 1px solid #fff;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.1rem;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1.1rem;
     font-weight: 500;
     transition: background-color 0.3s, color 0.3s, transform 0.2s;
 
