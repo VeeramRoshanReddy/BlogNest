@@ -3,6 +3,16 @@ import styled from 'styled-components';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const BlogCard = ({ blog, onClick }) => {
+    // Debug logging - remove this after fixing
+    console.log('=== BlogCard Debug ===');
+    console.log('Full blog object:', blog);
+    console.log('Blog keys:', blog ? Object.keys(blog) : 'blog is null/undefined');
+    console.log('Blog.creator:', blog?.creator);
+    console.log('Blog.created_at:', blog?.created_at);
+    console.log('Blog.body:', blog?.body);
+    console.log('Blog.description:', blog?.description);
+    console.log('======================');
+    
     // Early return if blog is null or undefined
     if (!blog) {
         return (
@@ -26,32 +36,49 @@ const BlogCard = ({ blog, onClick }) => {
         if (!dateString) return 'Unknown date';
         
         try {
-            const date = new Date(dateString);
+            // Handle different date formats that might come from backend
+            let date;
+            if (typeof dateString === 'string') {
+                // Replace space with 'T' if needed for ISO format
+                const isoString = dateString.replace(' ', 'T');
+                date = new Date(isoString);
+            } else {
+                date = new Date(dateString);
+            }
+            
             // Check if date is valid
             if (isNaN(date.getTime())) {
+                console.error('Invalid date:', dateString);
                 return 'Invalid date';
             }
             return date.toLocaleDateString();
         } catch (error) {
-            console.error('Date formatting error:', error);
+            console.error('Date formatting error:', error, 'for date:', dateString);
             return 'Invalid date';
         }
     };
 
-    // Safe content handling
-    const getExcerpt = (content) => {
+    // Safe content handling - prioritize body over description
+    const getExcerpt = () => {
+        const content = blog.body || blog.description || '';
         if (!content || typeof content !== 'string') return 'No content available';
         return content.length > 120 ? content.slice(0, 120) + '...' : content;
+    };
+
+    // Get author name from creator relationship
+    const getAuthorName = () => {
+        if (!blog.creator) return 'Unknown Author';
+        return blog.creator.username || blog.creator.email || 'Unknown Author';
     };
 
     return (
         <Card onClick={() => onClick && onClick(blog)}>
             <Title>{blog.title || 'Untitled'}</Title>
             <Meta>
-                <Author>By {blog.author?.username || 'Unknown'}</Author>
+                <Author>By {getAuthorName()}</Author>
                 <Date>{formatDate(blog.created_at)}</Date>
             </Meta>
-            <Excerpt>{getExcerpt(blog.content)}</Excerpt>
+            <Excerpt>{getExcerpt()}</Excerpt>
             <Stats>
                 <Stat><FaThumbsUp /> {blog.likes || 0}</Stat>
                 <Stat><FaThumbsDown /> {blog.dislikes || 0}</Stat>

@@ -58,6 +58,32 @@ class User(UserBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
+# New Response Models
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    model_config = ConfigDict(from_attributes=True)
+
+class CategoryResponse(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class BlogResponse(BaseModel):
+    id: int
+    title: str
+    description: Optional[str] = None
+    body: str
+    published: bool = True  # Added default value
+    created_at: datetime
+    likes: int = 0
+    dislikes: int = 0
+    creator: UserResponse
+    category: CategoryResponse
+    model_config = ConfigDict(from_attributes=True)
+
 class ShowBlog(BaseModel):
     id: int
     title: str

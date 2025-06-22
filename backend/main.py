@@ -1,8 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+from typing import List
 import models
-from database import engine, SessionLocal, seed_categories
+import schemas
+from database import engine, SessionLocal, seed_categories, get_db
 from routers import blog, user, authentication
 from fastapi.middleware.cors import CORSMiddleware
+# Import repository if you have it, otherwise create the functions directly
+# import repository
 
 # Pydantic models are called schemas in FastAPI
 # SQLAlchemy models are called models in FastAPI
@@ -16,7 +21,7 @@ app = FastAPI(
 )
 
 # Add CORS middleware BEFORE any routes
-'''
+''' 
 @app.middleware("http")
 async def cors_handler(request, call_next):
     response = await call_next(request)
@@ -65,6 +70,28 @@ def health_check():
 @app.get("/test-cors")
 def test_cors():
     return {"message": "CORS is working!", "origin": "allowed"}
+
+# New blog endpoints using the BlogResponse model
+@app.get("/blogs", response_model=List[schemas.BlogResponse])
+def get_blogs(db: Session = Depends(get_db)):
+    # If you have a repository module, use:
+    # return repository.blog.get_all(db)
+    
+    # Otherwise, implement the logic directly:
+    blogs = db.query(models.Blog).all()
+    return blogs
+
+@app.get("/blogs/{id}", response_model=schemas.BlogResponse)
+def get_blog(id: int, db: Session = Depends(get_db)):
+    # If you have a repository module, use:
+    # return repository.blog.get_one(id, db)
+    
+    # Otherwise, implement the logic directly:
+    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    if not blog:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return blog
 
 '''
 from fastapi import FastAPI, Depends, status, Response, HTTPException
