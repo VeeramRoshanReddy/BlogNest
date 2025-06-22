@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import models
 from database import engine, SessionLocal, seed_categories
 from routers import blog, user, authentication
+from fastapi.middleware.cors import CORSMiddleware
 
 #Pydentic models are called schemeas in FastAPI
 #SQLAlchemy models are called models in FastAPI
@@ -12,6 +13,14 @@ app = FastAPI(
     title="BlogNest API",
     description="API for a full-featured blogging platform.",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or use your Vercel frontend URL for more security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.on_event("startup")
