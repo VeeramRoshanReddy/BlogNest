@@ -6,6 +6,7 @@ import schemas
 from database import engine, SessionLocal, seed_categories, get_db
 from routers import blog, user, authentication
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
 # Import repository if you have it, otherwise create the functions directly
 # import repository
 
@@ -77,7 +78,9 @@ def get_blogs(db: Session = Depends(get_db)):
     """Get all blogs for card display (without full body content)"""
     # Query with proper joins to ensure creator and category data is loaded
     blogs = db.query(models.Blog).join(models.User).join(models.Category).all()
-    return blogs
+    
+    # Convert to JSON-serializable format to handle datetime properly
+    return jsonable_encoder(blogs)
 
 @app.get("/blogs/{id}", response_model=schemas.BlogResponse)
 def get_blog(id: int, db: Session = Depends(get_db)):
@@ -86,13 +89,13 @@ def get_blog(id: int, db: Session = Depends(get_db)):
     if not blog:
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Blog not found")
-    return blog
+    return jsonable_encoder(blog)
 
 @app.get("/blogs/cards/all", response_model=List[schemas.BlogCardResponse])
 def get_blog_cards(db: Session = Depends(get_db)):
     """Explicit endpoint for blog cards with proper joins"""
     blogs = db.query(models.Blog).join(models.User).join(models.Category).all()
-    return blogs
+    return jsonable_encoder(blogs)
 
 '''
 from fastapi import FastAPI, Depends, status, Response, HTTPException

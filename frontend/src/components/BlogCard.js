@@ -30,41 +30,57 @@ const BlogCard = ({ blog, onClick }) => {
         );
     }
 
-    // Enhanced date formatting function
+    // Enhanced date formatting function with better error handling
     const formatDate = (dateString) => {
         if (!dateString) return 'Unknown date';
         
         try {
             let date;
             
+            console.log('Raw date from backend:', dateString, typeof dateString);
+            
             // Handle different date formats from backend
             if (typeof dateString === 'string') {
-                // If it's already in ISO format or similar
-                if (dateString.includes('T') || dateString.includes('-')) {
-                    date = new Date(dateString);
-                } else {
-                    // Handle other string formats
-                    date = new Date(dateString);
+                // Remove any timezone info that might cause issues
+                let cleanDateString = dateString;
+                
+                // Handle common problematic formats
+                if (dateString.includes('T')) {
+                    // ISO format: 2024-01-15T10:30:00.000Z or 2024-01-15T10:30:00
+                    cleanDateString = dateString.split('T')[0]; // Get just the date part
+                } else if (dateString.includes(' ')) {
+                    // SQL datetime format: 2024-01-15 10:30:00
+                    cleanDateString = dateString.split(' ')[0]; // Get just the date part
                 }
+                
+                console.log('Cleaned date string:', cleanDateString);
+                
+                // Try to parse the cleaned date
+                date = new Date(cleanDateString + 'T00:00:00'); // Add time to avoid timezone issues
             } else if (dateString instanceof Date) {
                 date = dateString;
             } else {
-                // Try to convert whatever we got
                 date = new Date(dateString);
             }
             
+            console.log('Parsed date object:', date);
+            
             // Check if date is valid
             if (isNaN(date.getTime())) {
-                console.error('Invalid date:', dateString);
+                console.error('Invalid date after parsing:', dateString);
                 return 'Invalid date';
             }
             
             // Format date in a readable way
-            return date.toLocaleDateString('en-US', {
+            const formattedDate = date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric'
             });
+            
+            console.log('Final formatted date:', formattedDate);
+            return formattedDate;
+            
         } catch (error) {
             console.error('Date formatting error:', error, 'for date:', dateString);
             return 'Invalid date';

@@ -99,8 +99,13 @@ class BlogCardResponse(BaseModel):
     @computed_field
     @property
     def formatted_date(self) -> str:
-        """Return formatted date string in ISO format for frontend compatibility"""
-        return self.created_at.isoformat()
+        """Return formatted date string that JavaScript can easily parse"""
+        try:
+            # Format as YYYY-MM-DD which is universally parseable by JavaScript
+            return self.created_at.strftime("%Y-%m-%d")
+        except Exception as e:
+            print(f"Date formatting error: {e}")
+            return "2024-01-01"  # Fallback date
     
     @computed_field
     @property
