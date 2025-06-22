@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, computed_field
 from typing import List, Optional
 from datetime import datetime
 
@@ -61,8 +61,8 @@ class ShowBlog(BaseModel):
     created_at: datetime
     creator: User
     category: Category
-    likes: int
-    dislikes: int
+    likes: int = 0
+    dislikes: int = 0
     model_config = ConfigDict(from_attributes=True)
 
 class ShowCategory(Category):
