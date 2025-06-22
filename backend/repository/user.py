@@ -1,7 +1,8 @@
 import models, schemas, hashing
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+from backend.repository import blog as blog_repository
 
 def create_user(request: schemas.UserCreate, db: Session):
     try:
@@ -64,3 +65,19 @@ def get_user(id: int, db: Session):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {id} not found")
     return user
+
+def get_liked_blogs(user_id: int, db: Session):
+    liked_blogs = db.query(models.Blog).join(models.BlogInteraction).filter(
+        models.BlogInteraction.user_id == user_id,
+        models.BlogInteraction.interaction == models.Interaction.like
+    ).options(
+        joinedload(models.Blog.creator),
+        joinedload(models.Blog.category)
+    ).order_by(models.Blog.created_at.desc()).all()
+    
+    # Manually add interaction counts for liked blogs
+    for blog in liked_blogs:
+        blog.likes = blog_repository.get_interaction_count(blog.id, models.Interaction.like, db)
+        blog.dislikes = blog_repository.get_interaction_count(blog.id, models.Interaction.dislike, db)
+
+    return liked_blogs

@@ -1,127 +1,68 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { FaThumbsUp, FaThumbsDown, FaTrash, FaHeart } from 'react-icons/fa';
 
-const BlogCard = ({ blog, onClick }) => {
-    // Debug logging - remove this after fixing
-    console.log('=== BlogCard Debug ===');
-    console.log('Full blog object:', blog);
-    console.log('Blog keys:', blog ? Object.keys(blog) : 'blog is null/undefined');
-    console.log('Blog.creator:', blog?.creator);
-    console.log('Blog.created_at:', blog?.created_at);
-    console.log('Blog.description:', blog?.description);
-    console.log('======================');
+const BlogCard = ({ blog, onClick, onDelete, onUnlike }) => {
     
-    // Early return if blog is null or undefined
+    const handleDeleteClick = (e) => {
+        e.stopPropagation();
+        if (onDelete) onDelete();
+    };
+
+    const handleUnlikeClick = (e) => {
+        e.stopPropagation();
+        if (onUnlike) onUnlike();
+    };
+
     if (!blog) {
         return (
             <Card>
                 <Title>Loading...</Title>
-                <Meta>
-                    <Author>By Unknown</Author>
-                    <Date>Unknown date</Date>
-                </Meta>
-                <Excerpt>Content loading...</Excerpt>
-                <Stats>
-                    <Stat><FaThumbsUp /> 0</Stat>
-                    <Stat><FaThumbsDown /> 0</Stat>
-                </Stats>
             </Card>
         );
     }
 
-    // Enhanced date formatting function with better error handling
     const formatDate = (dateString) => {
         if (!dateString) return 'Unknown date';
-        
         try {
-            let date;
-            
-            console.log('Raw date from backend:', dateString, typeof dateString);
-            
-            // Handle different date formats from backend
-            if (typeof dateString === 'string') {
-                // Remove any timezone info that might cause issues
-                let cleanDateString = dateString;
-                
-                // Handle common problematic formats
-                if (dateString.includes('T')) {
-                    // ISO format: 2024-01-15T10:30:00.000Z or 2024-01-15T10:30:00
-                    cleanDateString = dateString.split('T')[0]; // Get just the date part
-                } else if (dateString.includes(' ')) {
-                    // SQL datetime format: 2024-01-15 10:30:00
-                    cleanDateString = dateString.split(' ')[0]; // Get just the date part
-                }
-                
-                console.log('Cleaned date string:', cleanDateString);
-                
-                // Try to parse the cleaned date
-                date = new Date(cleanDateString + 'T00:00:00'); // Add time to avoid timezone issues
-            } else if (dateString instanceof Date) {
-                date = dateString;
-            } else {
-                date = new Date(dateString);
-            }
-            
-            console.log('Parsed date object:', date);
-            
-            // Check if date is valid
-            if (isNaN(date.getTime())) {
-                console.error('Invalid date after parsing:', dateString);
-                return 'Invalid date';
-            }
-            
-            // Format date in a readable way
-            const formattedDate = date.toLocaleDateString('en-US', {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Invalid Date';
+            return date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
-                day: 'numeric'
+                day: 'numeric',
             });
-            
-            console.log('Final formatted date:', formattedDate);
-            return formattedDate;
-            
         } catch (error) {
-            console.error('Date formatting error:', error, 'for date:', dateString);
-            return 'Invalid date';
+            return 'Invalid Date';
         }
     };
 
-    // Get description for excerpt - prioritize description over body for cards
     const getExcerpt = () => {
-        // For blog cards, we want description, not the full body content
-        const content = blog.description || 'No description available';
-        
-        if (!content || typeof content !== 'string') {
-            return 'No description available';
-        }
-        
-        // Truncate if too long
-        return content.length > 120 ? content.slice(0, 120) + '...' : content;
+        const content = blog.description || blog.body || '';
+        const cleanContent = content.replace(/<[^>]*>/g, '');
+        return cleanContent.length > 100 ? cleanContent.slice(0, 100) + '...' : cleanContent;
     };
 
-    // Get author name from creator relationship with better fallbacks
     const getAuthorName = () => {
-        // Check if we have a computed field from backend
-        if (blog.author_name) {
-            return blog.author_name;
-        }
-        
-        // Check creator object
-        if (blog.creator) {
-            return blog.creator.username || blog.creator.email || 'Unknown Author';
-        }
-        
-        // Fallback
-        return 'Unknown Author';
+        return blog.creator?.username || 'Anonymous';
     };
 
     return (
         <Card onClick={() => onClick && onClick(blog)}>
+            {onDelete && (
+                <DeleteButton onClick={handleDeleteClick}>
+                    <FaTrash />
+                </DeleteButton>
+            )}
+            {onUnlike && (
+                <UnlikeButton onClick={handleUnlikeClick}>
+                    <FaHeart />
+                </UnlikeButton>
+            )}
             <Title>{blog.title || 'Untitled'}</Title>
             <Meta>
                 <Author>By {getAuthorName()}</Author>
-                <Date>{formatDate(blog.created_at || blog.formatted_date)}</Date>
+                <DateText>{formatDate(blog.created_at)}</DateText>
             </Meta>
             <Excerpt>{getExcerpt()}</Excerpt>
             <Stats>
@@ -132,7 +73,52 @@ const BlogCard = ({ blog, onClick }) => {
     );
 };
 
+const ActionButton = styled.button`
+    position: absolute;
+    top: 15px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.7;
+    z-index: 10;
+
+    &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+`;
+
+const DeleteButton = styled(ActionButton)`
+    right: 15px;
+    background: #fff;
+    border: 1.5px solid #d32f2f;
+    color: #d32f2f;
+
+    &:hover {
+        background: #d32f2f;
+        color: #fff;
+    }
+`;
+
+const UnlikeButton = styled(ActionButton)`
+    right: 15px;
+    background: #d32f2f;
+    border: 1.5px solid #d32f2f;
+    color: #fff;
+
+    &:hover {
+        background: #fff;
+        color: #d32f2f;
+    }
+`;
+
 const Card = styled.div`
+    position: relative;
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.08), 0 1.5px 6px 0 rgba(25, 118, 210, 0.06);
@@ -155,6 +141,7 @@ const Title = styled.h2`
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0 0 4px 0;
+    padding-right: 40px; /* Space for buttons */
     letter-spacing: 0.5px;
 `;
 
@@ -171,7 +158,7 @@ const Author = styled.span`
     font-weight: 500;
 `;
 
-const Date = styled.span`
+const DateText = styled.span`
     font-style: italic;
 `;
 

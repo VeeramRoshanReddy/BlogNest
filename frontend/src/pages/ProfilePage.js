@@ -20,22 +20,15 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             if (!user) return;
+            setLoading(true);
+            setError('');
             try {
-                setLoading(true);
-                // The user object from the token might not have the ID.
-                // You might need a /users/me endpoint to get full user details.
-                // Assuming we can get it or already have it.
-                // The API doesn't have a dedicated "get my blogs" endpoint,
-                // so we filter all blogs. This is inefficient and should be
-                // optimized in a real app with a dedicated backend endpoint.
-                const allBlogsResponse = await api.get('/blogs');
-                const userBlogs = allBlogsResponse.data.filter(b => b.creator.username === user.sub); // user.sub is the email/username from JWT
-                setMyBlogs(userBlogs);
-
-                // Liked blogs endpoint doesn't exist yet. Placeholder.
-                // const likedBlogsResponse = await api.get('/users/me/liked-blogs');
-                // setLikedBlogs(likedBlogsResponse.data);
-
+                const [myBlogsResponse, likedBlogsResponse] = await Promise.all([
+                    api.get('/users/me/blogs'),
+                    api.get('/users/me/liked-blogs')
+                ]);
+                setMyBlogs(myBlogsResponse.data);
+                setLikedBlogs(likedBlogsResponse.data);
             } catch (err) {
                 setError('Failed to fetch profile data.');
                 console.error(err);
@@ -46,6 +39,28 @@ const ProfilePage = () => {
 
         fetchProfileData();
     }, [user, forceUpdate]);
+    
+    const handleDelete = async (blogId) => {
+        if (window.confirm('Are you sure you want to delete this blog? This action cannot be undone.')) {
+            try {
+                await api.delete(`/blog/${blogId}`);
+                setForceUpdate(prev => prev + 1);
+            } catch (err) {
+                console.error('Failed to delete blog', err);
+                setError('Failed to delete blog. You may not be the author.');
+            }
+        }
+    };
+
+    const handleUnlike = async (blogId) => {
+        try {
+            await api.post(`/blog/${blogId}/like`); // Toggling like will unlike it
+            setLikedBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blogId));
+        } catch (err) {
+            console.error('Failed to unlike blog', err);
+            setError('Failed to update liked blogs.');
+        }
+    };
 
     const handleCloseCreateModal = (didCreate) => {
         setCreateModalOpen(false);
@@ -73,20 +88,35 @@ const ProfilePage = () => {
                 </CreateBlogButton>
             </Header>
 
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
             <SectionTitle>My Posts</SectionTitle>
-            {loading && <p>Loading your blogs...</p>}
-            {error && <p>{error}</p>}
-            {!loading && !error && (
+            {loading ? <p>Loading your blogs...</p> : (
                 <BlogGrid>
                     {myBlogs.length > 0 ? myBlogs.map((blog) => (
-                        <BlogCard key={blog.id} blog={blog} onClick={setSelectedBlog} />
+                        <BlogCard 
+                            key={`my-${blog.id}`} 
+                            blog={blog} 
+                            onClick={setSelectedBlog} 
+                            onDelete={() => handleDelete(blog.id)}
+                        />
                     )) : <p>You haven't posted any blogs yet.</p>}
                 </BlogGrid>
             )}
 
             <SectionTitle>Liked Posts</SectionTitle>
-            <p>Feature coming soon...</p>
-            {/* When ready, you would map over likedBlogs here */}
+            {loading ? <p>Loading liked blogs...</p> : (
+                 <BlogGrid>
+                    {likedBlogs.length > 0 ? likedBlogs.map((blog) => (
+                        <BlogCard 
+                            key={`liked-${blog.id}`}
+                            blog={blog} 
+                            onClick={setSelectedBlog} 
+                            onUnlike={() => handleUnlike(blog.id)}
+                        />
+                    )) : <p>You haven't liked any blogs yet.</p>}
+                </BlogGrid>
+            )}
 
             {selectedBlog && <BlogModal blog={selectedBlog} onClose={handleCloseViewModal} />}
             {isCreateModalOpen && <CreateBlogModal onClose={handleCloseCreateModal} />}
@@ -109,7 +139,7 @@ const Header = styled.div`
 
 const Title = styled.h1`
     font-size: 2.5rem;
-    color: #333;
+    color: #1976d2;
 `;
 
 const CreateBlogButton = styled.button`
@@ -119,7 +149,7 @@ const CreateBlogButton = styled.button`
     padding: 12px 25px;
     border-radius: 25px;
     border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #1976d2;
     color: white;
     font-size: 1.1rem;
     font-weight: 500;
@@ -128,16 +158,17 @@ const CreateBlogButton = styled.button`
 
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        background: #1565c0;
+        box-shadow: 0 10px 20px rgba(25, 118, 210, 0.1);
     }
 `;
 
 const SectionTitle = styled.h2`
     font-size: 2rem;
-    color: #444;
+    color: #1976d2;
     margin-top: 40px;
     margin-bottom: 20px;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid #e3f0fd;
     padding-bottom: 10px;
 `;
 
@@ -145,6 +176,14 @@ const BlogGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 30px;
+`;
+
+const ErrorMessage = styled.p`
+    color: #d32f2f;
+    background: #ffcdd2;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
 `;
 
 export default ProfilePage; 

@@ -28,7 +28,7 @@ def get_blog(id: int, db: Session = Depends(get_db), current_user: schemas.User 
 
 @router.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_blog(id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return blog_repository.delete(id, current_user.id, db)
+    return blog_repository.destroy(id, current_user.id, db)
 
 @router.put("/blog/{id}", status_code=status.HTTP_202_ACCEPTED, response_model=schemas.ShowBlog)
 def update_blog(id: int, request: schemas.BlogCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):

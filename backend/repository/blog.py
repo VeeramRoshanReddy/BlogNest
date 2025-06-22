@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Response
 import models, schemas
 from typing import Optional
 from sqlalchemy import func
@@ -79,23 +79,28 @@ def get_one(id: int, db: Session):
     
     return blog
 
-def delete(id: int, user_id: int, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+def destroy(id: int, user_id: int, db: Session):
+    blog_query = db.query(models.Blog).filter(models.Blog.id == id)
+    blog = blog_query.first()
+    
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Blog not found"
         )
-    
+        
     if blog.user_id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to delete this blog"
         )
-    
-    db.delete(blog)
+
+    # Also delete associated interactions to maintain data integrity
+    db.query(models.BlogInteraction).filter(models.BlogInteraction.blog_id == id).delete(synchronize_session=False)
+
+    blog_query.delete(synchronize_session=False)
     db.commit()
-    return {"message": "Blog deleted successfully"}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 def update(id: int, request: schemas.BlogCreate, user_id: int, db: Session):
     blog_query = db.query(models.Blog).filter(models.Blog.id == id)
@@ -186,6 +191,19 @@ def get_categories(db: Session):
         category.blog_count = db.query(models.Blog).filter(models.Blog.category_id == category.id).count()
     
     return categories
+
+def get_blogs_by_user_id(user_id: int, db: Session):
+    blogs = db.query(models.Blog).options(
+        joinedload(models.Blog.creator),
+        joinedload(models.Blog.category)
+    ).filter(models.Blog.user_id == user_id).order_by(models.Blog.created_at.desc()).all()
+    
+    # Add likes and dislikes count to each blog
+    for blog in blogs:
+        blog.likes = get_interaction_count(blog.id, models.Interaction.like, db)
+        blog.dislikes = get_interaction_count(blog.id, models.Interaction.dislike, db)
+    
+    return blogs
 
 def get_category_blogs(category_id: int, db: Session, search: Optional[str] = None):
     category = db.query(models.Category).filter(models.Category.id == category_id).first()
