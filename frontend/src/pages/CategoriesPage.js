@@ -32,7 +32,7 @@ const CategoriesPage = () => {
             {error && <p>{error}</p>}
             {!loading && !error && (
                 <CategoryGrid>
-                    {categories.map((category) => (
+                    {categories.slice(0, 24).map((category) => (
                         <CategoryCard key={category.id} to={`/categories/${category.id}/blogs`}>
                             <CategoryName>{category.name}</CategoryName>
                             <CategoryDescription>{category.description}</CategoryDescription>

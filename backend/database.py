@@ -36,8 +36,7 @@ CATEGORIES = [
     {"name": "Mental Health Blog", "description": "Coping strategies, therapy insights, self-care advice."},
     {"name": "History Blog", "description": "Deep dives into historical events, people, and timelines."},
     {"name": "Marketing/SEO Blog", "description": "Digital marketing strategies, content SEO, analytics, advertising tips."},
-    {"name": "Nonprofit/Cause Blog", "description": "Promote social good, awareness, fundraising, or volunteering opportunities."},
-    {"name": "Startup/Entrepreneur Blog", "description": "Building a business, startup journeys, fundraising, and innovation strategies."}
+    {"name": "Nonprofit/Cause Blog", "description": "Promote social good, awareness, fundraising, or volunteering opportunities."}
 ]
 
 def seed_categories(db: Session):

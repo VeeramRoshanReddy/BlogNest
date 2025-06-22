@@ -1,6 +1,11 @@
+# Forward reference to avoid circular imports
+from __future__ import annotations
 from pydantic import BaseModel, ConfigDict, computed_field
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
+
+if TYPE_CHECKING:
+    pass
 
 class Login(BaseModel):
     username: str
@@ -65,9 +70,15 @@ class ShowBlog(BaseModel):
     dislikes: int = 0
     model_config = ConfigDict(from_attributes=True)
 
+# Simple category response without blogs list to avoid circular reference
 class ShowCategory(Category):
+    blog_count: int = 0
+    model_config = ConfigDict(from_attributes=True)
+
+# Detailed category with blogs (use only when needed)
+class ShowCategoryWithBlogs(Category):
     blogs: List[ShowBlog] = []
-    blog_count: int
+    blog_count: int = 0
     model_config = ConfigDict(from_attributes=True)
 
 class ShowUser(User):
@@ -77,6 +88,7 @@ class ShowUser(User):
 class BlogInteractionBase(BaseModel):
     blog_id: int
     interaction: str
+    model_config = ConfigDict(from_attributes=True)
 
 class LikedBlog(BaseModel):
     blog: ShowBlog

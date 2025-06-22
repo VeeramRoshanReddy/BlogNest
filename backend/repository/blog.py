@@ -179,7 +179,13 @@ def interact(blog_id: int, user_id: int, interaction_type: models.Interaction, d
     return {"message": message}
 
 def get_categories(db: Session):
-    return db.query(models.Category).all()
+    categories = db.query(models.Category).all()
+    
+    # Add blog_count to each category
+    for category in categories:
+        category.blog_count = db.query(models.Blog).filter(models.Blog.category_id == category.id).count()
+    
+    return categories
 
 def get_category_blogs(category_id: int, db: Session, search: Optional[str] = None):
     category = db.query(models.Category).filter(models.Category.id == category_id).first()

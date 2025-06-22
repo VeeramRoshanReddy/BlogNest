@@ -73,7 +73,7 @@ const CreateBlogModal = ({ onClose, blogToEdit }) => {
                         disabled={submitting}
                     >
                         <option value="" disabled>Select a Category</option>
-                        {categories.map(cat => (
+                        {categories.slice(0, 24).map(cat => (
                             <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
                     </Select>

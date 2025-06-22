@@ -9,22 +9,29 @@ import { FaSearch, FaArrowLeft } from 'react-icons/fa';
 const CategoryBlogPage = () => {
     const { categoryId } = useParams();
     const [blogs, setBlogs] = useState([]);
-    const [category, setCategory] = useState(null); // To store category info
+    const [category, setCategory] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('title');
     const [forceUpdate, setForceUpdate] = useState(0);
 
     const fetchCategoryBlogs = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await api.get(`/categories/${categoryId}/blogs`, {
-                params: { search: searchTerm }
-            });
-            setBlogs(response.data);
-            if(response.data.length > 0 && !category) {
-                setCategory(response.data[0].category);
+            const response = await api.get(`/categories/${categoryId}/blogs`);
+            let sorted = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            if (searchTerm.trim()) {
+                if (searchBy === 'author') {
+                    sorted = sorted.filter(blog => blog.author?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
+                } else {
+                    sorted = sorted.filter(blog => blog.title?.toLowerCase().includes(searchTerm.toLowerCase()));
+                }
+            }
+            setBlogs(sorted);
+            if(sorted.length > 0 && !category) {
+                setCategory(sorted[0].category);
             }
         } catch (err) {
             setError('Failed to fetch blogs for this category.');
@@ -32,14 +39,10 @@ const CategoryBlogPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [categoryId, searchTerm, category]);
+    }, [categoryId, searchTerm, searchBy, category]);
 
     useEffect(() => {
-        const searchTimeout = setTimeout(() => {
-            fetchCategoryBlogs();
-        }, 500);
-
-        return () => clearTimeout(searchTimeout);
+        fetchCategoryBlogs();
     }, [fetchCategoryBlogs, forceUpdate]);
 
     const handleCloseModal = (didInteract) => {
@@ -56,20 +59,23 @@ const CategoryBlogPage = () => {
                     <BackButton to="/categories"><FaArrowLeft /> Back to Categories</BackButton>
                     <Title>Blogs in {category ? `"${category.name}"` : 'Category'}</Title>
                 </div>
-                <SearchContainer>
+                <SearchBarContainer>
                     <SearchInput
                         type="text"
-                        placeholder="Search in this category..."
+                        placeholder={`Search by ${searchBy}...`}
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                     />
+                    <Dropdown value={searchBy} onChange={e => setSearchBy(e.target.value)}>
+                        <option value="title">Title</option>
+                        <option value="author">Author</option>
+                    </Dropdown>
                     <SearchIcon />
-                </SearchContainer>
+                </SearchBarContainer>
             </Header>
 
             {loading && <p>Loading blogs...</p>}
             {error && <p>{error}</p>}
-            
             {!loading && !error && blogs.length > 0 ? (
                 <BlogGrid>
                     {blogs.map((blog) => (
@@ -110,29 +116,50 @@ const BackButton = styled(Link)`
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
-    color: #667eea;
+    color: #1976d2;
     font-weight: 500;
 `;
 
-const SearchContainer = styled.div`
-    position: relative;
-    width: 300px;
+const SearchBarContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #e3f0fd;
+    border-radius: 12px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.06);
 `;
 
 const SearchInput = styled.input`
-    width: 100%;
-    padding: 12px 20px 12px 40px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #1976d2;
     font-size: 1rem;
+    background: #fff;
+    color: #0d2346;
+    width: 180px;
+    &:focus {
+        border-color: #1565c0;
+        outline: none;
+    }
+`;
+
+const Dropdown = styled.select`
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #1976d2;
+    font-size: 1rem;
+    background: #fff;
+    color: #1976d2;
+    &:focus {
+        border-color: #1565c0;
+        outline: none;
+    }
 `;
 
 const SearchIcon = styled(FaSearch)`
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
+    color: #1976d2;
+    font-size: 1.2rem;
 `;
 
 const BlogGrid = styled.div`
