@@ -3,9 +3,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import models
 
-import os
-os.makedirs("/data", exist_ok=True)
-
 SQLALCHEMY_DATABASE_URL = "sqlite:////data/blog.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
