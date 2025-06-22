@@ -3,6 +3,24 @@ import styled from 'styled-components';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const BlogCard = ({ blog, onClick }) => {
+    // Early return if blog is null or undefined
+    if (!blog) {
+        return (
+            <Card>
+                <Title>Loading...</Title>
+                <Meta>
+                    <Author>By Unknown</Author>
+                    <Date>Unknown date</Date>
+                </Meta>
+                <Excerpt>Content loading...</Excerpt>
+                <Stats>
+                    <Stat><FaThumbsUp /> 0</Stat>
+                    <Stat><FaThumbsDown /> 0</Stat>
+                </Stats>
+            </Card>
+        );
+    }
+
     // Safe date formatting function
     const formatDate = (dateString) => {
         if (!dateString) return 'Unknown date';
@@ -20,14 +38,20 @@ const BlogCard = ({ blog, onClick }) => {
         }
     };
 
+    // Safe content handling
+    const getExcerpt = (content) => {
+        if (!content || typeof content !== 'string') return 'No content available';
+        return content.length > 120 ? content.slice(0, 120) + '...' : content;
+    };
+
     return (
-        <Card onClick={() => onClick(blog)}>
-            <Title>{blog.title}</Title>
+        <Card onClick={() => onClick && onClick(blog)}>
+            <Title>{blog.title || 'Untitled'}</Title>
             <Meta>
                 <Author>By {blog.author?.username || 'Unknown'}</Author>
                 <Date>{formatDate(blog.created_at)}</Date>
             </Meta>
-            <Excerpt>{blog.content.slice(0, 120)}{blog.content.length > 120 ? '...' : ''}</Excerpt>
+            <Excerpt>{getExcerpt(blog.content)}</Excerpt>
             <Stats>
                 <Stat><FaThumbsUp /> {blog.likes || 0}</Stat>
                 <Stat><FaThumbsDown /> {blog.dislikes || 0}</Stat>
