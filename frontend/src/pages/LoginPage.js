@@ -55,8 +55,18 @@ const LoginPage = () => {
             // Handle different types of errors
             let errorMessage = 'An error occurred. Please try again.';
             
-            if (err.response?.data?.detail) {
-                errorMessage = err.response.data.detail;
+            if (err.response?.status === 422) {
+                errorMessage = 'Invalid email or password format. Please check your input.';
+            } else if (err.response?.status === 401) {
+                errorMessage = 'Invalid email or password.';
+            } else if (err.response?.status === 400) {
+                errorMessage = 'Bad request. Please check your input.';
+            } else if (err.response?.data?.detail) {
+                if (Array.isArray(err.response.data.detail)) {
+                    errorMessage = err.response.data.detail.map(d => d.msg || d).join(', ');
+                } else {
+                    errorMessage = err.response.data.detail;
+                }
             } else if (err.response?.data?.message) {
                 errorMessage = err.response.data.message;
             } else if (err.message) {

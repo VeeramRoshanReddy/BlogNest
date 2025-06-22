@@ -32,10 +32,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // Fix: Send data as JSON instead of URLSearchParams
-      const response = await api.post('/login', {
-        username: email, // or email: email depending on your backend
+      // Fix: Send as form data (URLSearchParams) as your backend expects
+      const response = await api.post('/login', new URLSearchParams({
+        username: email,
         password: password
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       });
 
       const { access_token } = response.data;
