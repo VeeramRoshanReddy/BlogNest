@@ -9,23 +9,65 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { login, signup } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
+        
         try {
             if (isLogin) {
                 const data = await login(email, password);
-                localStorage.setItem('access_token', data.access_token);
-                navigate('/');
+                // Data and token setting is now handled in AuthContext
+                if (data) {
+                    navigate('/');
+                } else {
+                    throw new Error('Login failed - no data returned');
+                }
             } else {
-                await signup(username, email, password);
+                // Validate required fields for signup
+                if (!username.trim()) {
+                    throw new Error('Username is required');
+                }
+                if (!email.trim()) {
+                    throw new Error('Email is required');
+                }
+                if (!password.trim()) {
+                    throw new Error('Password is required');
+                }
+                
+                const result = await signup(username, email, password);
+                // After successful signup, navigate to login or home
+                if (result) {
+                    navigate('/');
+                } else {
+                    // If signup successful but no data returned, switch to login
+                    setIsLogin(true);
+                    setError('Account created successfully! Please login.');
+                }
             }
-            navigate('/');
         } catch (err) {
-            setError(err.response?.data?.detail || 'An error occurred. Please try again.');
+            console.error('Authentication error:', err);
+            
+            // Handle different types of errors
+            let errorMessage = 'An error occurred. Please try again.';
+            
+            if (err.response?.data?.detail) {
+                errorMessage = err.response.data.detail;
+            } else if (err.response?.data?.message) {
+                errorMessage = err.response.data.message;
+            } else if (err.message) {
+                errorMessage = err.message;
+            } else if (typeof err === 'string') {
+                errorMessage = err;
+            }
+            
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -42,6 +84,7 @@ const LoginPage = () => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        disabled={loading}
                     />
                 )}
                 <Input
@@ -50,6 +93,7 @@ const LoginPage = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={loading}
                 />
                 <Input
                     type="password"
@@ -57,9 +101,20 @@ const LoginPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    disabled={loading}
                 />
-                <Button type="submit">{isLogin ? 'Login' : 'Sign Up'}</Button>
-                <ToggleButton onClick={() => setIsLogin(!isLogin)}>
+                <Button type="submit" disabled={loading}>
+                    {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
+                </Button>
+                <ToggleButton 
+                    onClick={() => {
+                        if (!loading) {
+                            setIsLogin(!isLogin);
+                            setError(''); // Clear error when switching
+                        }
+                    }}
+                    disabled={loading}
+                >
                     {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
                 </ToggleButton>
             </FormContainer>
@@ -103,9 +158,15 @@ const Input = styled.input`
     background: rgba(255, 255, 255, 0.2);
     color: white;
     font-size: 1rem;
+    box-sizing: border-box;
 
     &::placeholder {
         color: rgba(255, 255, 255, 0.7);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 `;
 
@@ -122,20 +183,30 @@ const Button = styled.button`
     cursor: pointer;
     transition: all 0.3s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background: linear-gradient(-135deg, #89f7fe 0%, #66a6ff 100%);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 `;
 
 const ToggleButton = styled.p`
     cursor: pointer;
     text-decoration: underline;
+    
+    &[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 `;
 
 const ErrorMessage = styled.p`
     color: #ffcccb;
-    margin-top: 10px;
+    margin: 10px 0;
+    font-weight: bold;
 `;
 
-
-export default LoginPage; 
+export default LoginPage;
