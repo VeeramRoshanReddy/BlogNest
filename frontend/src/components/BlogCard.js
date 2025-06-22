@@ -1,124 +1,89 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaUser, FaCalendarAlt, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
-import { format } from 'date-fns';
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const BlogCard = ({ blog, onClick }) => {
     return (
         <Card onClick={() => onClick(blog)}>
-            <CardHeader>
-                <BlogTitle>{blog.title}</BlogTitle>
-                <BlogCategory>{blog.category.name}</BlogCategory>
-            </CardHeader>
-            <BlogDescription>{blog.description}</BlogDescription>
-            <CardFooter>
-                <AuthorInfo>
-                    <FaUser />
-                    <span>{blog.creator.username}</span>
-                </AuthorInfo>
-                <DateInfo>
-                    <FaCalendarAlt />
-                    <span>{format(new Date(blog.created_at), 'MMM dd, yyyy')}</span>
-                </DateInfo>
-                <Interactions>
-                    <Likes>
-                        <FaThumbsUp />
-                        {blog.likes}
-                    </Likes>
-                    <Dislikes>
-                        <FaThumbsDown />
-                        {blog.dislikes}
-                    </Dislikes>
-                </Interactions>
-            </CardFooter>
+            <Title>{blog.title}</Title>
+            <Meta>
+                <Author>By {blog.author?.username || 'Unknown'}</Author>
+                <Date>{new Date(blog.created_at).toLocaleDateString()}</Date>
+            </Meta>
+            <Excerpt>{blog.content.slice(0, 120)}{blog.content.length > 120 ? '...' : ''}</Excerpt>
+            <Stats>
+                <Stat><FaThumbsUp /> {blog.likes || 0}</Stat>
+                <Stat><FaThumbsDown /> {blog.dislikes || 0}</Stat>
+            </Stats>
         </Card>
     );
 };
 
 const Card = styled.div`
-    background: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-    padding: 25px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.10), 0 1.5px 6px 0 rgba(25, 118, 210, 0.08);
+    padding: 32px 28px 24px 28px;
+    transition: transform 0.18s, box-shadow 0.18s;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-
+    gap: 18px;
+    border: 2px solid #1976d2;
     &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        transform: translateY(-6px) scale(1.025);
+        box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18), 0 3px 12px 0 rgba(25, 118, 210, 0.12);
+        border-color: #2196f3;
     }
 `;
 
-const CardHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
-`;
-
-const BlogTitle = styled.h2`
+const Title = styled.h2`
+    color: #1976d2;
     font-size: 1.5rem;
-    color: #333;
     font-weight: 700;
+    margin: 0 0 4px 0;
+    letter-spacing: 0.5px;
 `;
 
-const BlogCategory = styled.span`
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    white-space: nowrap;
-`;
-
-const BlogDescription = styled.p`
-    font-size: 1rem;
-    color: #666;
-    line-height: 1.6;
-    flex-grow: 1;
-    margin-bottom: 20px;
-`;
-
-const CardFooter = styled.div`
+const Meta = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #999;
-    font-size: 0.9rem;
+    font-size: 0.98rem;
+    color: #1976d2;
+    opacity: 0.85;
 `;
 
-const AuthorInfo = styled.div`
+const Author = styled.span`
+    font-weight: 500;
+`;
+
+const Date = styled.span`
+    font-style: italic;
+`;
+
+const Excerpt = styled.p`
+    color: #0d2346;
+    font-size: 1.08rem;
+    margin: 0 0 8px 0;
+    line-height: 1.6;
+    min-height: 48px;
+`;
+
+const Stats = styled.div`
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin-top: 8px;
+`;
+
+const Stat = styled.div`
     display: flex;
     align-items: center;
-    gap: 8px;
-`;
-
-const DateInfo = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 8px;
-`;
-
-const Interactions = styled.div`
-    display: flex;
-    gap: 15px;
-`;
-
-const Likes = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #28a745;
-`;
-
-const Dislikes = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #dc3545;
+    gap: 6px;
+    color: #1976d2;
+    font-weight: 600;
+    font-size: 1.05rem;
 `;
 
 export default BlogCard; 

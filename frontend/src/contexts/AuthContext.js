@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/login', new URLSearchParams({
         username: email,
-        password: password,
+        password: password
       }));
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);

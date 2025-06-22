@@ -83,7 +83,7 @@ const Overlay = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(25, 118, 210, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,7 +92,7 @@ const Overlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-    background: white;
+    background: #fff;
     padding: 40px;
     border-radius: 20px;
     width: 90%;
@@ -101,6 +101,8 @@ const ModalContainer = styled.div`
     overflow-y: auto;
     position: relative;
     animation: ${slideIn} 0.4s ease;
+    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18);
+    border: 2px solid #1976d2;
 `;
 
 const CloseButton = styled.button`
@@ -111,30 +113,30 @@ const CloseButton = styled.button`
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #999;
-    
+    color: #1976d2;
     &:hover {
-        color: #333;
+        color: #fff;
+        background: #1976d2;
+        border-radius: 50%;
     }
 `;
 
 const BlogTitle = styled.h1`
     font-size: 2.5rem;
     margin-bottom: 10px;
-    color: #333;
+    color: #1976d2;
 `;
 
 const BlogDescription = styled.p`
     font-size: 1.2rem;
-    color: #666;
+    color: #1976d2;
     margin-bottom: 30px;
     font-style: italic;
 `;
 
 const BlogBody = styled.div`
     line-height: 1.8;
-    color: #444;
-    
+    color: #0d2346;
     p {
         margin-bottom: 20px;
     }
@@ -145,7 +147,7 @@ const InteractionFooter = styled.div`
     justify-content: flex-end;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #eee;
+    border-top: 1.5px solid #e3f0fd;
     gap: 20px;
 `;
 
@@ -155,16 +157,17 @@ const ActionButton = styled.button`
     gap: 8px;
     padding: 10px 20px;
     border-radius: 20px;
-    border: 1px solid ${props => props.clicked ? '#667eea' : '#ccc'};
-    background-color: ${props => props.clicked ? '#667eea' : 'transparent'};
-    color: ${props => props.clicked ? 'white' : '#666'};
+    border: 2px solid #1976d2;
+    background-color: ${props => props.clicked ? '#1976d2' : '#fff'};
+    color: ${props => props.clicked ? '#fff' : '#1976d2'};
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-
+    transition: all 0.2s;
     &:hover {
-        background-color: ${props => props.clicked ? '#764ba2' : '#f0f0f0'};
-        border-color: ${props => props.clicked ? '#764ba2' : '#bbb'};
+        background-color: #2196f3;
+        color: #fff;
+        border-color: #2196f3;
     }
 `;
 

@@ -51,13 +51,11 @@ const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18);
+    border-bottom: 2px solid #1976d2;
     z-index: 1000;
-    color: white;
+    color: #fff;
 `;
 
 const LogoContainer = styled.div`
@@ -67,14 +65,15 @@ const LogoContainer = styled.div`
 const Logo = styled(Link)`
     font-size: 2.5rem;
     font-weight: bold;
-    color: white;
+    color: #fff;
     font-family: 'Georgia', serif;
+    letter-spacing: 1px;
 `;
 
 const Tagline = styled.p`
     font-size: 0.8rem;
     margin-top: -5px;
-    color: rgba(255, 255, 255, 0.8);
+    color: #e3f0fd;
 `;
 
 const NavLinks = styled.div`
@@ -93,11 +92,13 @@ const StyledLink = styled(Link)`
     align-items: center;
     gap: 8px;
     font-size: 1.1rem;
-    color: white;
-    transition: color 0.3s ease;
-
+    color: #fff;
+    transition: color 0.2s;
     &:hover {
-        color: #89f7fe;
+        color: #1976d2;
+        background: #fff;
+        border-radius: 8px;
+        padding: 4px 10px;
     }
 `;
 
@@ -106,13 +107,15 @@ const LogoutButton = styled.button`
     border: none;
     cursor: pointer;
     font-size: 1.1rem;
-    color: white;
-    transition: color 0.3s ease;
+    color: #fff;
+    transition: color 0.2s, background 0.2s;
     display: flex;
     align-items: center;
-
     &:hover {
-        color: #ffcccb;
+        color: #1976d2;
+        background: #fff;
+        border-radius: 8px;
+        padding: 4px 10px;
     }
 `;
 

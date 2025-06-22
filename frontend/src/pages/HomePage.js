@@ -3,37 +3,33 @@ import styled from 'styled-components';
 import api from '../services/api';
 import BlogCard from '../components/BlogCard';
 import BlogModal from '../components/BlogModal';
-import { FaSearch } from 'react-icons/fa';
 
 const HomePage = () => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedBlog, setSelectedBlog] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
     const [forceUpdate, setForceUpdate] = useState(0);
 
     const fetchBlogs = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await api.get('/blogs', {
-                params: { search: searchTerm }
-            });
-            setBlogs(response.data);
+            const response = await api.get('/blogs');
+            // Sort by created_at descending and take only the first 9
+            const sorted = response.data
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 9);
+            setBlogs(sorted);
         } catch (err) {
             setError('Failed to fetch blogs.');
             console.error(err);
         } finally {
             setLoading(false);
         }
-    }, [searchTerm]);
+    }, []);
 
     useEffect(() => {
-        const searchTimeout = setTimeout(() => {
-            fetchBlogs();
-        }, 500); // Debounce search
-
-        return () => clearTimeout(searchTimeout);
+        fetchBlogs();
     }, [fetchBlogs, forceUpdate]);
 
     const handleCardClick = (blog) => {
@@ -43,28 +39,14 @@ const HomePage = () => {
     const handleCloseModal = (didInteract) => {
         setSelectedBlog(null);
         if (didInteract) {
-            setForceUpdate(prev => prev + 1); // Trigger a refetch
+            setForceUpdate(prev => prev + 1);
         }
     };
 
     return (
         <Container>
-            <Header>
-                <Title>Latest Stories</Title>
-                <SearchContainer>
-                    <SearchInput
-                        type="text"
-                        placeholder="Search by title or author..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <SearchIcon />
-                </SearchContainer>
-            </Header>
-
-            {loading && <p>Loading blogs...</p>}
-            {error && <p>{error}</p>}
-            
+            {loading && <Loading>Loading blogs...</Loading>}
+            {error && <ErrorMsg>{error}</ErrorMsg>}
             {!loading && !error && (
                 <BlogGrid>
                     {blogs.map((blog) => (
@@ -72,60 +54,45 @@ const HomePage = () => {
                     ))}
                 </BlogGrid>
             )}
-
             {selectedBlog && <BlogModal blog={selectedBlog} onClose={handleCloseModal} />}
         </Container>
     );
 };
 
 const Container = styled.div`
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-`;
-
-const Header = styled.div`
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 40px;
-`;
-
-const Title = styled.h1`
-    font-size: 2.5rem;
-    color: #333;
-`;
-
-const SearchContainer = styled.div`
-    position: relative;
-    width: 300px;
-`;
-
-const SearchInput = styled.input`
-    width: 100%;
-    padding: 12px 20px 12px 40px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    font-size: 1rem;
-    
-    &:focus {
-        outline: none;
-        border-color: #667eea;
-    }
-`;
-
-const SearchIcon = styled(FaSearch)`
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
+    justify-content: flex-start;
+    padding: 40px 0 0 0;
 `;
 
 const BlogGrid = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+`;
+
+const Loading = styled.div`
+    color: #1976d2;
+    font-size: 1.5rem;
+    margin-top: 60px;
+    font-weight: bold;
+`;
+
+const ErrorMsg = styled.div`
+    color: #fff;
+    background: #1976d2;
+    padding: 16px 32px;
+    border-radius: 10px;
+    margin-top: 60px;
+    font-size: 1.2rem;
 `;
 
 export default HomePage; 
