@@ -51,11 +51,11 @@ const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
-    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18);
-    border-bottom: 2px solid #1976d2;
+    background: #fff;
+    box-shadow: 0 2px 12px 0 rgba(25, 118, 210, 0.07);
+    border-bottom: 2px solid #e3f0fd;
     z-index: 1000;
-    color: #fff;
+    color: #1976d2;
 `;
 
 const LogoContainer = styled.div`
@@ -65,7 +65,7 @@ const LogoContainer = styled.div`
 const Logo = styled(Link)`
     font-size: 2.5rem;
     font-weight: bold;
-    color: #fff;
+    color: #1976d2;
     font-family: 'Georgia', serif;
     letter-spacing: 1px;
 `;
@@ -73,7 +73,8 @@ const Logo = styled(Link)`
 const Tagline = styled.p`
     font-size: 0.8rem;
     margin-top: -5px;
-    color: #e3f0fd;
+    color: #1976d2;
+    opacity: 0.7;
 `;
 
 const NavLinks = styled.div`
@@ -92,13 +93,14 @@ const StyledLink = styled(Link)`
     align-items: center;
     gap: 8px;
     font-size: 1.1rem;
-    color: #fff;
-    transition: color 0.2s;
+    color: #1976d2;
+    background: transparent;
+    border-radius: 8px;
+    padding: 4px 10px;
+    transition: background 0.18s, color 0.18s;
     &:hover {
-        color: #1976d2;
-        background: #fff;
-        border-radius: 8px;
-        padding: 4px 10px;
+        background: #e3f0fd;
+        color: #1565c0;
     }
 `;
 
@@ -107,15 +109,15 @@ const LogoutButton = styled.button`
     border: none;
     cursor: pointer;
     font-size: 1.1rem;
-    color: #fff;
-    transition: color 0.2s, background 0.2s;
+    color: #1976d2;
+    transition: background 0.18s, color 0.18s;
     display: flex;
     align-items: center;
+    border-radius: 8px;
+    padding: 4px 10px;
     &:hover {
-        color: #1976d2;
-        background: #fff;
-        border-radius: 8px;
-        padding: 4px 10px;
+        background: #e3f0fd;
+        color: #1565c0;
     }
 `;
 

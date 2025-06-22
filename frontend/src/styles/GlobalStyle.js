@@ -7,8 +7,8 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
-    background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
-    color: #fff;
+    background: #fff;
+    color: #0d2346;
     box-sizing: border-box;
     scroll-behavior: smooth;
   }
@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     transition: color 0.15s;
     &:hover {
-      color: #2196f3;
+      color: #1565c0;
     }
   }
 
@@ -31,13 +31,13 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 6px;
     border: 1.5px solid #1976d2;
     background: #fff;
-    color: #1976d2;
+    color: #0d2346;
     font-size: 1rem;
     transition: border-color 0.15s, box-shadow 0.15s;
     &:focus {
       outline: none;
-      border-color: #2196f3;
-      box-shadow: 0 0 0 2px #2196f355;
+      border-color: #1976d2;
+      box-shadow: 0 0 0 2px #1976d255;
     }
   }
 
@@ -52,7 +52,7 @@ const GlobalStyle = createGlobalStyle`
     color: #fff;
   }
 
-  /* Remove scrollbars for a cleaner look */
+  /* Subtle blue scrollbars */
   ::-webkit-scrollbar {
     width: 8px;
     background: #e3f0fd;
@@ -60,6 +60,12 @@ const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar-thumb {
     background: #1976d2;
     border-radius: 8px;
+  }
+
+  /* Subtle blue box-shadow for cards/modals */
+  .card, .modal {
+    box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.08), 0 1.5px 6px 0 rgba(25, 118, 210, 0.06);
+    border: 1.5px solid #e3f0fd;
   }
 `;
 

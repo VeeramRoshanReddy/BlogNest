@@ -62,7 +62,7 @@ const HomePage = () => {
 const Container = styled.div`
     min-height: 100vh;
     width: 100vw;
-    background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+    background: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,9 +73,9 @@ const Container = styled.div`
 const BlogGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 32px;
-    width: 90%;
-    max-width: 1200px;
+    gap: 40px;
+    width: 92%;
+    max-width: 1280px;
     margin: 0 auto;
 `;
 

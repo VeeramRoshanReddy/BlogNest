@@ -83,7 +83,7 @@ const Overlay = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(25, 118, 210, 0.85);
+    background: rgba(25, 118, 210, 0.10);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -101,8 +101,8 @@ const ModalContainer = styled.div`
     overflow-y: auto;
     position: relative;
     animation: ${slideIn} 0.4s ease;
-    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18);
-    border: 2px solid #1976d2;
+    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.10);
+    border: 2px solid #e3f0fd;
 `;
 
 const CloseButton = styled.button`
@@ -165,9 +165,9 @@ const ActionButton = styled.button`
     cursor: pointer;
     transition: all 0.2s;
     &:hover {
-        background-color: #2196f3;
-        color: #fff;
-        border-color: #2196f3;
+        background-color: #e3f0fd;
+        color: #1976d2;
+        border-color: #1565c0;
     }
 `;
 

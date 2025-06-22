@@ -107,7 +107,7 @@ const slideIn = keyframes`from { transform: translateY(-30px); } to { transform:
 
 const Overlay = styled.div`
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(25, 118, 210, 0.85);
+    background: rgba(25, 118, 210, 0.10);
     display: flex; justify-content: center; align-items: center;
     z-index: 2000; animation: ${fadeIn} 0.3s ease;
 `;
@@ -116,8 +116,8 @@ const ModalContainer = styled.div`
     background: #fff; padding: 40px; border-radius: 20px;
     width: 90%; max-width: 700px; position: relative;
     animation: ${slideIn} 0.4s ease;
-    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18);
-    border: 2px solid #1976d2;
+    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.10);
+    border: 2px solid #e3f0fd;
 `;
 
 const CloseButton = styled.button`
@@ -136,30 +136,31 @@ const ModalTitle = styled.h2`
 const Input = styled.input`
     width: 100%; padding: 12px; margin-bottom: 15px;
     border-radius: 8px; border: 1.5px solid #1976d2; font-size: 1rem;
-    background: #fff; color: #1976d2;
-    &:focus { border-color: #2196f3; box-shadow: 0 0 0 2px #2196f355; }
+    background: #fff; color: #0d2346;
+    &:focus { border-color: #1565c0; box-shadow: 0 0 0 2px #1976d255; }
 `;
 
 const Select = styled.select`
     width: 100%; padding: 12px; margin-bottom: 15px;
     border-radius: 8px; border: 1.5px solid #1976d2; font-size: 1rem;
-    background-color: #fff; color: #1976d2;
-    &:focus { border-color: #2196f3; box-shadow: 0 0 0 2px #2196f355; }
+    background-color: #fff; color: #0d2346;
+    &:focus { border-color: #1565c0; box-shadow: 0 0 0 2px #1976d255; }
 `;
 
 const TextArea = styled.textarea`
     width: 100%; padding: 12px; margin-bottom: 20px;
     border-radius: 8px; border: 1.5px solid #1976d2; font-size: 1rem;
     height: 200px; resize: vertical;
-    background: #fff; color: #1976d2;
-    &:focus { border-color: #2196f3; box-shadow: 0 0 0 2px #2196f355; }
+    background: #fff; color: #0d2346;
+    &:focus { border-color: #1565c0; box-shadow: 0 0 0 2px #1976d255; }
 `;
 
 const SubmitButton = styled.button`
     width: 100%; padding: 15px; border: none; border-radius: 8px;
-    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+    background: #1976d2;
     color: #fff; font-size: 1.2rem; font-weight: bold; cursor: pointer;
     transition: background 0.2s;
+    &:hover { background: #1565c0; }
     &:disabled { background: #e3f0fd; color: #1976d2; cursor: not-allowed; }
 `;
 

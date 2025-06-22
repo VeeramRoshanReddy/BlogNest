@@ -22,18 +22,18 @@ const BlogCard = ({ blog, onClick }) => {
 const Card = styled.div`
     background: #fff;
     border-radius: 18px;
-    box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.10), 0 1.5px 6px 0 rgba(25, 118, 210, 0.08);
+    box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.08), 0 1.5px 6px 0 rgba(25, 118, 210, 0.06);
     padding: 32px 28px 24px 28px;
-    transition: transform 0.18s, box-shadow 0.18s;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     gap: 18px;
-    border: 2px solid #1976d2;
+    border: 2px solid #e3f0fd;
     &:hover {
         transform: translateY(-6px) scale(1.025);
-        box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.18), 0 3px 12px 0 rgba(25, 118, 210, 0.12);
-        border-color: #2196f3;
+        box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.14), 0 3px 12px 0 rgba(25, 118, 210, 0.10);
+        border-color: #1976d2;
     }
 `;
 
