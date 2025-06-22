@@ -3,8 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import models
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./blog.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+# Example hardcoded PostgreSQL connection string for Render
+# Replace with your actual credentials if needed
+SQLALCHEMY_DATABASE_URL = "postgresql://blognestdb_a36u_user:loKN1LN2lL3hFlO9QqrcZyMv2giSRbBJ@dpg-d1c2hk3e5dus73f4i9i0-a/blognestdb_a36u"
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
