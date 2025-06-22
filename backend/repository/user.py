@@ -2,7 +2,7 @@ import models, schemas, hashing
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
-from backend.repository import blog as blog_repository
+from repository import blog as blog_repository
 
 def create_user(request: schemas.UserCreate, db: Session):
     try:
