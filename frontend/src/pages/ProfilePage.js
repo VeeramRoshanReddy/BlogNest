@@ -212,4 +212,15 @@ const ErrorMessage = styled.p`
     text-align: center;
 `;
 
+const UserInfo = styled.div`
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 2rem;
+`;
+
+const UserName = styled.h1`
+    font-size: 2.5rem;
+    color: #1976d2;
+`;
+
 export default ProfilePage; 

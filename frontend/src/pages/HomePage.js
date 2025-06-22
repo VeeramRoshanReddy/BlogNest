@@ -97,6 +97,7 @@ const PageContainer = styled.div`
 const Title = styled.h1`
     font-size: 2.5rem;
     color: #1976d2;
+    margin-top: 0;
     margin-bottom: 1rem;
     text-align: center;
     font-weight: 700;

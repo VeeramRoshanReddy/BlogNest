@@ -132,20 +132,20 @@ const OuterContainer = styled.div`
     align-items: center;
     min-height: 100vh;
     padding: 2rem;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
     overflow: hidden;
 `;
 
 const CardContainer = styled.div`
-    background: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 2rem;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
     width: 100%;
     max-width: 400px;
-    position: relative;
     animation: ${slide} 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    transition: all 0.3s ease-in-out;
 `;
 
 const ToggleBar = styled.div`
@@ -202,11 +202,10 @@ const FormContainer = styled.form`
 
 const Title = styled.h2`
     text-align: center;
-    margin-bottom: 1.2rem;
-    color: #1976d2;
+    margin-bottom: 1.5rem;
+    color: #0d2346;
     font-size: 2rem;
     font-weight: 700;
-    letter-spacing: 1px;
 `;
 
 const SubTitle = styled.p`
@@ -216,27 +215,32 @@ const SubTitle = styled.p`
 `;
 
 const Input = styled.input`
-    padding: 0.8rem;
-    margin-bottom: 0.9rem;
-    border: 1px solid #ddd;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
     border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
     font-size: 1rem;
+    color: #333;
     transition: all 0.3s ease;
+
+    &::placeholder {
+        color: #555;
+    }
 
     &:focus {
         outline: none;
-        border-color: #1976d2;
-        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
-        transform: scale(1.02);
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.3);
     }
 `;
 
 const Button = styled.button`
     width: 100%;
-    padding: 0.8rem 1.5rem;
-    margin-top: 10px;
-    border: none;
+    padding: 0.9rem;
     border-radius: 10px;
+    border: none;
     background: #1976d2;
     color: #fff;
     font-size: 1.2rem;
@@ -262,12 +266,14 @@ const Button = styled.button`
 `;
 
 const ToggleText = styled.p`
-    color: #555;
-    transition: color 0.3s ease;
+    text-align: center;
+    margin-top: 1rem;
+    color: #0d2346;
+    font-weight: 500;
 
     span {
         color: #1976d2;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         
         &:hover {

@@ -37,16 +37,16 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent; 
+    background: rgba(0,0,0,0.05); 
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #ccc; /* Grey scrollbar handle */
+    background: #cccccc; /* A solid, medium grey */
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #aaa; /* Darker grey on hover */
+    background: #aaaaaa; /* A darker grey on hover */
   }
 
   a {
