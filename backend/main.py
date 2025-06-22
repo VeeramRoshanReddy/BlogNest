@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from . import models
-from .database import engine, SessionLocal, seed_categories
-from .routers import blog, user, authentication
+import models
+from database import engine, SessionLocal, seed_categories
+from routers import blog, user, authentication
 
 #Pydentic models are called schemeas in FastAPI
 #SQLAlchemy models are called models in FastAPI

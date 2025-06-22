@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from .. import models, schemas
+import models, schemas
 from fastapi import HTTPException, status
 from typing import List, Optional
-from ..models import Interaction
+from models import Interaction
 
 def create(request: schemas.BlogCreate, user_id: int, db: Session):
     db_blog = models.Blog(
