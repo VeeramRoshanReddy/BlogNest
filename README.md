@@ -30,6 +30,27 @@ BlogNest is a modern, full-stack blog application designed for creating, sharing
 -   **State Management**: React Context API
 -   **Routing**: `react-router-dom`
 -   **JWT Decoding**: `jwt-decode`
+-   **Date Handling**: `date-fns`
+
+## 📁 Project Structure
+
+```
+BlogNest/
+├── backend/                 # FastAPI backend
+│   ├── routers/            # API route handlers
+│   ├── models.py           # Database models
+│   ├── schemas.py          # Pydantic schemas
+│   ├── database.py         # Database configuration
+│   ├── main.py             # FastAPI application
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # React frontend
+│   ├── src/                # React source code
+│   ├── public/             # Static assets
+│   ├── package.json        # Node.js dependencies
+│   └── package-lock.json   # Locked dependency versions
+├── .gitignore              # Git ignore rules
+└── README.md               # This file
+```
 
 ## 🚀 Getting Started
 
@@ -74,7 +95,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
     *   Navigate to the frontend directory:
         ```bash
-        cd ../frontend
+        cd frontend
         ```
     *   Install the required npm packages:
         ```bash
@@ -101,5 +122,24 @@ Follow these instructions to get a copy of the project up and running on your lo
         npm start
         ```
     *   The application will open in your browser at `http://localhost:3000`.
+
+## 🔧 Development
+
+-   **Backend Development**: The backend uses FastAPI with automatic API documentation available at `http://127.0.0.1:8000/docs` when running.
+-   **Frontend Development**: The frontend uses React with hot reloading enabled for development.
+-   **Database**: Make sure your PostgreSQL server is running and accessible with the configured connection string.
+
+## 📝 API Endpoints
+
+The backend provides the following main endpoints:
+-   `POST /register` - User registration
+-   `POST /login` - User authentication
+-   `GET /blogs` - Get all blogs
+-   `POST /blogs` - Create a new blog
+-   `PUT /blogs/{id}` - Update a blog
+-   `DELETE /blogs/{id}` - Delete a blog
+-   `POST /blogs/{id}/like` - Like/unlike a blog
+
+For complete API documentation, visit `http://127.0.0.1:8000/docs` when the backend is running.
 
 Now you can visit `http://localhost:3000` in your browser, create an account, and start blogging! 
