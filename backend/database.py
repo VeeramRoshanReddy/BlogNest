@@ -2,10 +2,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import models
+import os
+from dotenv import load_dotenv
 
-# Example hardcoded PostgreSQL connection string for Render
-# Replace with your actual credentials if needed
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Roshan4002***@db.nwlhfmxlhttlltuobewq.supabase.co:5432/postgres"
+load_dotenv()
+
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not SQLALCHEMY_DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set. Please check your .env file.")
+
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
