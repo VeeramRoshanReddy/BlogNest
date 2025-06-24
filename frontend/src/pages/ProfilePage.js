@@ -53,7 +53,7 @@ const ProfilePage = () => {
     const confirmDelete = async () => {
         if (!blogToDelete) return;
         try {
-            await api.delete(`/blogs/${blogToDelete}`);
+            await api.delete(`/blog/${blogToDelete}`);
             setForceUpdate(prev => prev + 1);
         } catch (err) {
             setError('Failed to delete the blog. Please try again.');
